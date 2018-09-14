@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Jazo CAFE</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="216111411838-78363qavvtsqsg0kp980sbn9321enqst.apps.googleusercontent.com">
+</head>
+<style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    
+    #map {
+        height: 600px;
+        width: 600px;
+    }
+    /* Optional: Makes the sample page fill the window. */
+    
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<body>
+
+    <img src="imagen/usuarios/5b9719f3542fe8077fd341b5-986.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7InJvbGUiOiJVU0VSX1JPTEUiLCJlc3RhZG8iOnRydWUsImdvb2dsZSI6ZmFsc2UsIl9pZCI6IjViOTcxOWYzNTQyZmU4MDc3ZmQzNDFiNSIsIm5vbWJyZSI6IkphdmllciIsImVtYWlsIjoidXNlckB1c2VyLmNvbSIsIl9fdiI6MH0sImlhdCI6MTUzNjY4NzcyMCwiZXhwIjoxNTM2ODYwNTIwfQ.SB8Koqca2B4tysIO1Wr2RJOw2tKKgXs_I3w7vkCPh2U"
+        alt="">
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <script>
+        function onSignIn(googleUser) {
+
+            var profile = googleUser.getBasicProfile();
+            // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            // console.log('Name: ' + profile.getName());
+            // console.log('Image URL: ' + profile.getImageUrl());
+            // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+            var id_token = googleUser.getAuthResponse().id_token;
+            console.log(id_token);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/google');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                console.log('Signed in as: ' + xhr.responseText);
+            };
+            xhr.send('idtoken=' + id_token);
+        }
+    </script>
+    <a href="#" onclick="signOut();">Sign out</a>
+    <script>
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function() {
+                console.log('User signed out.');
+            });
+        }
+    </script>
+
+    <div id="map"></div>
+    <script type="text/javascript">
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 10,
+                center: new google.maps.LatLng(-34.564585, -58.478086),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+            google.maps.event.addListener(map, 'idle', function() {
+                var bounds = map.getBounds();
+                ne = bounds.getNorthEast();
+                sw = bounds.getSouthWest();
+                console.log('ne_lat=' + ne.lat() + '&ne_lng=' + ne.lng() + '&sw_lat=' + sw.lng() + '&sw_lng=' + sw.lng());
+
+
+                // console.log('ne_lat:' + ne.lat());
+                // console.log('ne_lng:' + ne.lng());
+                // console.log(+'&sw_lat:' + sw.lng());
+                // console.log(+'&sw_lng:' + sw.lng());
+                //do whatever you want with those bounds
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?client=gme-telecompersonalsa&amp;v=3.exp&libraries=places&callback=initMap" async defer></script>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script> -->
+</body>
+
+</html>
